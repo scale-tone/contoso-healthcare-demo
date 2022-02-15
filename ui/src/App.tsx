@@ -1,11 +1,20 @@
 import React from 'react';
 import { makeAutoObservable } from 'mobx';
 import { observer } from 'mobx-react';
-import { AppBar, Button, Box, Chip, Grid, LinearProgress, List, ListItem, Paper, TextField, Toolbar, Typography } from '@material-ui/core';
-import { AccountCircle } from '@material-ui/icons';
+import { AppBar, Button, Box, Chip, List, ListItem, Paper, TextField, Toolbar, Typography } from '@material-ui/core';
 
 import { DurableEntitySet } from './common/DurableEntitySet';
 import { HealthCheckState, SymptomsEnum } from './shared/HealthCheckState';
+
+const entityName = 'HealthCheckEntity';
+var entityKey = '';
+
+const appState = makeAutoObservable({
+
+    msgText: '',
+
+    state: new HealthCheckState()
+});
 
 // Optional setup
 DurableEntitySet.setup({
@@ -31,21 +40,18 @@ DurableEntitySet.setup({
             // Asking the user for some fake user name. Obviously, we should never do it like that in production.
             userName = prompt('Enter your name:', 'Anonymous') as string;
             resolve(userName);
+
+        }).then(() => {
+
+            entityKey = `health-check-${userName}`
+
+            appState.state = DurableEntitySet.createEntity(entityName, entityKey, new HealthCheckState());
         });
     }),
 
     logger: { log: (l, msg: string) => console.log(msg) }
 });
 
-const entityName = 'HealthCheckEntity';
-const entityKey = 'my-health-check';
-
-const appState = makeAutoObservable({
-
-    msgText: '',
-
-    state: DurableEntitySet.createEntity(entityName, entityKey, new HealthCheckState())
-});
 
 // Rendering that entity state
 export const App = observer(
@@ -54,6 +60,7 @@ export const App = observer(
         private sendMessage() {
 
             DurableEntitySet.signalEntity(entityName, entityKey, 'sendHealthCheck', appState.msgText);
+            appState.msgText = '';
         }
 
         render(): JSX.Element { return (<>
@@ -63,7 +70,7 @@ export const App = observer(
 
                     Your symptoms so far:
 
-                    {appState.state.symptoms.map(symptom => (
+                    {appState.state?.symptoms.map((symptom: SymptomsEnum) => (
                         <Chip label={SymptomsEnum[symptom]} color="secondary" variant="outlined" className="appointment-status-chip" />
                     ))}
 
@@ -72,7 +79,7 @@ export const App = observer(
 
             <List>
 
-                {appState.state.history.map(msg => (<ListItem>
+                {appState.state?.history.map((msg: any) => (<ListItem>
                     
                     <Paper className="appointment-paper" style={{ marginLeft: !msg.isFromServer ? 20 : 0 }}>
                 
@@ -113,7 +120,6 @@ export const App = observer(
 
                 </Toolbar>
             </AppBar>
-
 
         </>);}
     }
