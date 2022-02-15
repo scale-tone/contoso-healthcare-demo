@@ -10,10 +10,11 @@ class HealthCheckEntity extends DurableEntity_1.DurableEntity {
         healthCheck.text = msg;
         healthCheck.timestamp = new Date();
         // extracting symptoms
-        Object.keys(HealthCheckState_1.SymptomsEnum).map(symptomKey => {
-            const symptomName = HealthCheckState_1.SymptomsEnum[symptomKey].toString();
+        const symptomKeys = Object.keys(HealthCheckState_1.SymptomsEnum).map(k => parseInt(k)).filter(k => !isNaN(k));
+        symptomKeys.map(symptomKey => {
+            const symptomName = HealthCheckState_1.SymptomsEnum[symptomKey];
             if (msg.toLowerCase().includes(symptomName.toLowerCase())) {
-                this.state.symptoms.push(parseInt(symptomKey));
+                this.state.symptoms.push(symptomKey);
             }
         });
         this.state.history.push(healthCheck);

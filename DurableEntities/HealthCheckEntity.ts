@@ -14,12 +14,13 @@ export class HealthCheckEntity extends DurableEntity<HealthCheckState>
         healthCheck.timestamp = new Date();
 
         // extracting symptoms
-        Object.keys(SymptomsEnum).map(symptomKey => {
+        const symptomKeys = Object.keys(SymptomsEnum).map(k => parseInt(k)).filter(k => !isNaN(k));
+        symptomKeys.map(symptomKey => {
 
-            const symptomName = SymptomsEnum[symptomKey].toString();
+            const symptomName = SymptomsEnum[symptomKey];
             if (msg.toLowerCase().includes(symptomName.toLowerCase())) {
              
-                this.state.symptoms.push(parseInt(symptomKey));
+                this.state.symptoms.push(symptomKey);
             }
         });
 
@@ -32,13 +33,11 @@ export class HealthCheckEntity extends DurableEntity<HealthCheckState>
         var newState = new HealthCheckState();
 
         newState.history = [
-
             {
                 text: `Hi, how do you feel today?`,
                 timestamp: new Date(),
                 isFromServer: true
             }
-
         ];
 
         return newState;
