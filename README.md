@@ -17,3 +17,7 @@ func ==> storage
 func --> analytics
 
 ```
+
+# Live Demo
+
+https://durmvckykp7vssaqdkk-function.azurewebsites.net/
