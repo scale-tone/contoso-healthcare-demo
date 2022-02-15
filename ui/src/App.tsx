@@ -5,7 +5,7 @@ import { AppBar, Button, Box, Chip, Grid, LinearProgress, List, ListItem, Paper,
 import { AccountCircle } from '@material-ui/icons';
 
 import { DurableEntitySet } from './common/DurableEntitySet';
-import { HealthCheckState } from './shared/HealthCheckState';
+import { HealthCheckState, SymptomsEnum } from './shared/HealthCheckState';
 
 // Optional setup
 DurableEntitySet.setup({
@@ -61,6 +61,32 @@ export const App = observer(
             <AppBar position="static" color="default" className="app-bar">
                 <Toolbar>
 
+                    Your symptoms so far:
+
+                    {appState.state.symptoms.map(symptom => (
+                        <Chip label={SymptomsEnum[symptom]} color="secondary" variant="outlined" className="appointment-status-chip" />
+                    ))}
+
+                </Toolbar>
+            </AppBar>
+
+            <List>
+
+                {appState.state.history.map(msg => (<ListItem><Paper className="appointment-paper">
+                
+                    <Paper style={{ marginLeft: !msg.isFromServer ? 20 : 0 }}>
+
+                        <Typography>{msg.text}</Typography>
+
+                    </Paper>
+                
+                </Paper></ListItem>))}
+
+            </List>
+
+            <AppBar position="static" color="default" className="app-bar">
+                <Toolbar>
+
                     <TextField
                         fullWidth
                         label="Your message"
@@ -93,21 +119,7 @@ export const App = observer(
                 </Toolbar>
             </AppBar>
 
-            <List>
 
-                {appState.state.history.map(msg => (<ListItem><Paper className="appointment-paper">
-                
-                    <Grid container spacing={2}>
-
-                        <Grid item xs={2}>
-                            <Typography className="participants-text">Participants:</Typography>
-                        </Grid>
-
-                    </Grid>
-                
-                </Paper></ListItem>))}
-
-            </List>
         </>);}
     }
 );

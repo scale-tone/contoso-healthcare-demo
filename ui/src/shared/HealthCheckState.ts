@@ -3,6 +3,7 @@ export class ChatMessage {
 
     text: string = '';
     timestamp: Date = new Date();
+    isFromServer: boolean = false;
 }
 
 export enum SymptomsEnum {

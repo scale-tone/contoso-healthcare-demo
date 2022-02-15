@@ -3,7 +3,11 @@
     "extensions": {
         "http": {
             "routePrefix": ""
-        }
+        },
+
+        "durableTask": {
+            "hubName": "HealthCheckHub"
+          }
     },
     "extensionBundle": {
         "id": "Microsoft.Azure.Functions.ExtensionBundle",

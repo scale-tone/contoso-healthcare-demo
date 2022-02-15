@@ -5,6 +5,7 @@ class ChatMessage {
     constructor() {
         this.text = '';
         this.timestamp = new Date();
+        this.isFromServer = false;
     }
 }
 exports.ChatMessage = ChatMessage;

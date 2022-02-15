@@ -6,21 +6,24 @@ import { HealthCheckState, ChatMessage, SymptomsEnum } from '../ui/src/shared/He
 export class HealthCheckEntity extends DurableEntity<HealthCheckState>
 {
 
-    sendHealthCheck(msg: ChatMessage) {
+    sendHealthCheck(msg: string) {
         
-        msg.timestamp = new Date();
+        const healthCheck = new ChatMessage();
+
+        healthCheck.text = msg;
+        healthCheck.timestamp = new Date();
 
         // extracting symptoms
         Object.keys(SymptomsEnum).map(symptomKey => {
 
-            const symptomName = SymptomsEnum[symptomKey];
-            if (msg.text.toLowerCase().includes(symptomName.toLowerCase())) {
+            const symptomName = SymptomsEnum[symptomKey].toString();
+            if (msg.toLowerCase().includes(symptomName.toLowerCase())) {
              
-                this.state.symptoms.push();
+                this.state.symptoms.push(parseInt(symptomKey));
             }
         });
 
-        this.state.history.push(msg);
+        this.state.history.push(healthCheck);
     }
 
     // Custom state initialization for a newly created entity
@@ -28,10 +31,15 @@ export class HealthCheckEntity extends DurableEntity<HealthCheckState>
 
         var newState = new HealthCheckState();
 
-        newState.history.push({
-            text: `Hi ${this.stateMetadata.owner}, how do you feel today?`,
-            timestamp: new Date()
-        });
+        newState.history = [
+
+            {
+                text: `Hi, how do you feel today?`,
+                timestamp: new Date(),
+                isFromServer: true
+            }
+
+        ];
 
         return newState;
     }

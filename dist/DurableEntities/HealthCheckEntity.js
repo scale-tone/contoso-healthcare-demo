@@ -6,27 +6,28 @@ const HealthCheckState_1 = require("../ui/src/shared/HealthCheckState");
 // Healthcheck entity
 class HealthCheckEntity extends DurableEntity_1.DurableEntity {
     sendHealthCheck(msg) {
-        msg.timestamp = new Date();
-        /*
-                // extracting symptoms
-                Object.keys(SymptomsEnum).map(symptomKey => {
-        
-                    const symptomName = SymptomsEnum[symptomKey];
-                    if (msg.text.toLowerCase().includes(symptomName.toLowerCase())) {
-                     
-                        this.state.symptoms.push();
-                    }
-                });
-        */
-        this.state.history.push(msg);
+        const healthCheck = new HealthCheckState_1.ChatMessage();
+        healthCheck.text = msg;
+        healthCheck.timestamp = new Date();
+        // extracting symptoms
+        Object.keys(HealthCheckState_1.SymptomsEnum).map(symptomKey => {
+            const symptomName = HealthCheckState_1.SymptomsEnum[symptomKey].toString();
+            if (msg.toLowerCase().includes(symptomName.toLowerCase())) {
+                this.state.symptoms.push(parseInt(symptomKey));
+            }
+        });
+        this.state.history.push(healthCheck);
     }
     // Custom state initialization for a newly created entity
     initializeState() {
         var newState = new HealthCheckState_1.HealthCheckState();
-        newState.history.push({
-            text: `Hi ${this.stateMetadata.owner}, how do you feel today?`,
-            timestamp: new Date()
-        });
+        newState.history = [
+            {
+                text: `Hi, how do you feel today?`,
+                timestamp: new Date(),
+                isFromServer: true
+            }
+        ];
         return newState;
     }
 }
