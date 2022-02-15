@@ -72,15 +72,15 @@ export const App = observer(
 
             <List>
 
-                {appState.state.history.map(msg => (<ListItem><Paper className="appointment-paper">
+                {appState.state.history.map(msg => (<ListItem>
+                    
+                    <Paper className="appointment-paper" style={{ marginLeft: !msg.isFromServer ? 20 : 0 }}>
                 
-                    <Paper style={{ marginLeft: !msg.isFromServer ? 20 : 0 }}>
-
                         <Typography>{msg.text}</Typography>
-
-                    </Paper>
                 
-                </Paper></ListItem>))}
+                    </Paper>
+
+                </ListItem>))}
 
             </List>
 
@@ -110,11 +110,6 @@ export const App = observer(
                     >
                         Send
                     </Button>
-
-                    <Box width={40} />
-
-                    <AccountCircle />
-                    <Box width={5} />
 
                 </Toolbar>
             </AppBar>
